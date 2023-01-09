@@ -1,0 +1,92 @@
+programme puissance_4 c'est
+    
+    //On définit les constantes pour la hauteur et la largeur de la grille
+    constante entier HAUTEUR := 6;
+    constante entier LARGEUR := 7;
+
+
+    //On définit les constantes des pions
+    constante chaine(2) PION_J1 := 'O';
+    constante chaine(2) PION_J2 := 'X';
+
+    //On définit une constante lorsque la case dans la grille est vide
+    constante chaine(2) VIDE := ' ';
+
+    //On définit les constantes FIN lorsque le joueur a fini
+    constante chaine(5) FIN := "FIN";
+
+    //On définit la constante qui permet au joueur de rejouer
+    constante chaine(6) DEFAULT := "NULL"; 
+
+
+
+    //On définit les constantes pour les numéros de pions
+    constante entier NUM_PION_JOUEUR1 := 1;
+    constante entier NUM_PION_JOUEUR2 := 2;
+    constante entier NUM_PION_VIDE := 0;
+
+    //On créé un type de tableau en rapport avec les dimensions de la grille
+    type TABJEU = tableau[1.. HAUTEUR, 1.. LARGEUR] de entier;
+
+    //procédure permettant aux joueurs de saisir leurs noms
+    procedure saisiNom(sortF joueur_1 : chaine(50), sortF joueur_2 : chaine(50));
+
+    //Fonction qui permet de savoir lequel des deux joueurs commencera la partie
+    fonction commenceAJouer(entF joueur_1 : chaine(50), entF joueur_2 : chaine(50)) delivre chaine;
+
+    //Fonction qui verifie si le joueur a saisi une donnée correcte entre le minimum 
+    // de largeur et son maximum et verifie aussi si la colonne n'est pas pleine lorsque le joueur place son pion
+    fonction donneeCorrecte(entF choixJoueur : entier, entF tab_joueurs : TABJEU ) delivre booléen;
+
+    //Les fonctions ci-dessous permettent de désigner un gagnant et un perdant sauf si il y a égalité
+    fonction gagner(entF tab_joueurs : TABJEU, entF joueur_1 : chaine(50), entF joueur_2 : chaine(50)) delivre booléen;
+    fonction egalite(entF tab_joueurs : TABJEU, entF joueur_1 : chaine(50), entF joueur_2 : chaine(50)) delivre booléen;
+
+
+    //Procédure permettant de placer un pion dans la grille
+    procédure placerSonPion(entF/sortF tab : TABJEU, entF joueurCommence : chaine(50),entF joueur_1 : chaine(50), entF joueur_2 : chaine(50));
+
+    //Procédure pour que les joueurs puissent recommencer la partie
+    procedure recommencerPartie(entF/sortF rejouer : chaine(50));
+
+    //Procédure permettant d'initialiser le tableau de jeu
+    procedure creationTab(sortF tab_joueurs : TABJEU);
+
+    //Procédure qui affiche la grille de jeu dans la console
+    procedure grille(entF tab_joueurs : TABJEU);
+
+
+debut
+
+    joueur_1, joueur_2, joueurCommence, rejouer : chaine(50);
+    tab_joueurs : TABJEU;
+    rejouer:= DEFAULT;
+
+    //On initialise un tableau vide composé de 0
+    creationTab(sortE tab_joueurs);
+
+    grille(entE tab_joueurs);
+    saisiNom(sortE joueur_1, sortE joueur_2);
+
+    tant que (rejouer != FIN) faire
+        joueurCommence := commenceAJouer(entE joueur_1, entE joueur_2);
+
+        placerSonPion(entE/sortE tab_joueurs, entE joueurCommence, entE joueur_1, entE joueur_2);
+        grille(entE tab_joueurs);
+
+        tant que (gagner(entE tab_joueurs, entE joueur_1, entE joueur_2) != VRAI ET egalite(entE tab_joueurs, entE joueur_1, entE joueur_2) != VRAI)
+            si(joueurCommence == joueur_1) alors
+                joueurCommence := joueur_2;
+                ecrireEcran("C'est au tour de ",joueurCommence," de jouer !");
+            sinon
+                joueurCommence := joueur_1;
+                ecrireEcran("C'est au tour de ",joueurCommence," de jouer !");
+            finsi
+            placerSonPion(entE/sortE tab_joueurs, entE joueurCommence, entE joueur_1, entE joueur_2);
+            grille(entE tab_joueurs);
+        finfaire
+        recommencerPartie(entE/sortE rejouer);
+    finfaire
+
+
+fin
